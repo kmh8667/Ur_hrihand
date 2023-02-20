@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<robot name="hri_hand" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- parameters -->
+  <!-- <xacro:property name="pi" value="3.141592654" /> -->
+
+  <!--hand -->
+    <link name="gripper_link">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.3"/>
+        <inertia ixx="0.1"  ixy="0"  ixz="0" iyy="0.1" iyz="0" izz="0.1" />
+      </inertial>
+      <visual>
+        <origin xyz="0.008 0 0.115" rpy="${pi/2} 0 ${-pi/2}" />
+        <geometry>
+          <mesh filename="package://husky_ur3_gazebo/meshes/hri_hand.stl"/>
+        </geometry>
+        <material name="Cyan">
+          <color rgba="0 1.0 1.0 1.0"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0.008 0 0.115" rpy="${pi/2} 0 ${pi/2}"/>
+        <geometry>
+          <mesh filename="package://husky_ur3_gazebo/meshes/hri_hand.stl"/>
+        </geometry>
+      </collision>
+    </link>
+    
+    <joint name="grip_joint" type="fixed">
+      <parent link="gripper_link" />
+      <child link = "grip_point" />
+      <origin xyz="0.015 0.0 0.185" rpy="0.0 0.0 0" />
+    </joint>
+
+    <link name="grip_point">
+      <visual>
+        <origin xyz="0 0 0" rpy = "0 0 0"/>
+        <geometry>
+          <box size="0.01 0.05 0.03"/>
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy = "0 0 0"/>
+        <geometry>
+          <box size="0.01 0.05 0.03"/>
+        </geometry>
+      </collision>
+    </link>
+
+</robot>

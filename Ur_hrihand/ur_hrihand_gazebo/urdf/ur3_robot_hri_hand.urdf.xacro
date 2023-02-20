@@ -1,0 +1,180 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro"
+       name="ur3"  >
+
+  <xacro:arg name="transmission_hw_interface" default="hardware_interface/PositionJointInterface"/>
+
+  <!-- common stuff -->
+  <!--xacro:include filename="$(find ur_description)/urdf/common.gazebo.xacro" /-->
+
+  <!-- ur3 -->
+  <xacro:include filename="$(find ur_hrihand_gazebo)/urdf/ur3.urdf.xacro" />
+  <!-- <xacro:include filename="$(find ur_robot_server)/urdf/hri_hand.xacro" /> -->
+  <xacro:include filename="$(find ur_hrihand_gazebo)/urdf/d435_camera_g.urdf.xacro" />
+  
+  <!-- arm -->
+  <xacro:ur3_robot prefix="" joint_limited="true"
+    shoulder_pan_lower_limit="${-pi}" shoulder_pan_upper_limit="${pi}"
+    shoulder_lift_lower_limit="${-pi}" shoulder_lift_upper_limit="${pi}"
+    elbow_joint_lower_limit="${-pi+0.52359}" elbow_joint_upper_limit="${pi}"
+    wrist_1_lower_limit="${-pi}" wrist_1_upper_limit="${pi}"
+    wrist_2_lower_limit="${-pi}" wrist_2_upper_limit="${pi}"
+    wrist_3_lower_limit="${-pi}" wrist_3_upper_limit="${pi}"
+    transmission_hw_interface="$(arg transmission_hw_interface)"
+  />
+
+  <xacro:g_sensor_d435 parent="gripper_link">
+    <origin xyz="-0.07 0.0 0.00" rpy="0 ${-pi/2} 0"/>
+  </xacro:g_sensor_d435>
+    
+
+  <!-- Configure self collision properties per link -->
+  <gazebo reference="shoulder_link">
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="upper_arm_link">
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="forearm_link">
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="wrist_1_link">
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="wrist_3_link">
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="wrist_2_link">
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="gripper_link">
+    <selfCollide>true</selfCollide>
+  </gazebo>
+
+  <!--
+    Inject Gazebo ROS Control plugin, which allows us to use ros_control
+    controllers to control the virtual robot hw.
+  -->
+  <gazebo>
+    <plugin name="ros_control" filename="libgazebo_ros_control.so">
+      <!--robotNamespace>/</robotNamespace-->
+      <!--robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType-->
+    </plugin>
+  </gazebo>
+
+    <!-- Collision sensors on all links -->
+  <gazebo reference="shoulder_link">
+    <sensor name='shoulder_link_contact' type='contact'>
+      <update_rate> 50 </update_rate>
+      <always_on>true</always_on>
+        <contact>
+            <collision>shoulder_link_collision</collision>
+        </contact>
+        <plugin name="ros_bumper_0" filename="libgazebo_ros_bumper.so">
+          <bumperTopicName>shoulder_collision</bumperTopicName>
+          <frameName>shoulder_link</frameName>
+        </plugin>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="upper_arm_link">
+    <sensor name='upper_arm_link_contact' type='contact'>
+      <update_rate> 50 </update_rate>
+      <always_on>true</always_on>
+        <contact>
+            <collision>upper_arm_link_collision</collision>
+        </contact>
+        <plugin name="ros_bumper_1" filename="libgazebo_ros_bumper.so">
+          <bumperTopicName>upper_arm_collision</bumperTopicName>
+          <frameName>upper_arm_link</frameName>
+        </plugin>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="forearm_link">
+    <sensor name='forearm_link_contact' type='contact'>
+      <update_rate> 50 </update_rate>
+      <always_on>true</always_on>
+        <contact>
+            <collision>forearm_link_collision</collision>
+        </contact>
+        <plugin name="ros_bumper_2" filename="libgazebo_ros_bumper.so">
+          <bumperTopicName>forearm_collision</bumperTopicName>
+          <frameName>forearm_link</frameName>
+        </plugin>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="wrist_1_link">
+    <sensor name='wrist_1_link_contact' type='contact'>
+      <update_rate> 50 </update_rate>
+      <always_on>true</always_on>
+        <contact>
+            <collision>wrist_1_link_collision</collision>
+        </contact>
+        <plugin name="ros_bumper_3" filename="libgazebo_ros_bumper.so">
+          <bumperTopicName>wrist_1_collision</bumperTopicName>
+          <frameName>wrist_1_link</frameName>
+        </plugin>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="wrist_2_link">
+    <sensor name='wrist_2_link_contact' type='contact'>
+      <update_rate> 50 </update_rate>
+      <always_on>true</always_on>
+        <contact>
+            <collision>wrist_2_link_collision</collision>
+        </contact>
+        <plugin name="ros_bumper_4" filename="libgazebo_ros_bumper.so">
+          <bumperTopicName>wrist_2_collision</bumperTopicName>
+          <frameName>wrist_2_link</frameName>
+        </plugin>
+    </sensor>
+  </gazebo>  
+
+  <gazebo reference="wrist_3_link">
+    <sensor name='wrist_3_link_contact' type='contact'>
+      <update_rate> 50 </update_rate>
+      <always_on>true</always_on>
+        <contact>
+            <collision>wrist_3_link_collision</collision>
+        </contact>
+        <plugin name="ros_bumper_5" filename="libgazebo_ros_bumper.so">
+          <bumperTopicName>wrist_3_collision</bumperTopicName>
+          <frameName>wrist_3_link</frameName>
+        </plugin>
+    </sensor>
+  </gazebo>
+
+  <!--add virtual contact sensor-->
+  <gazebo reference="gripper_link">
+    <sensor name="gripper_link_collision" type="contact">
+      <update_rate> 50 </update_rate>
+      <always_on>true</always_on>
+      <contact>
+        <collision>wrist_3_link_fixed_joint_lump__gripper_link_collision_1</collision>
+      </contact>
+      <plugin filename="libgazebo_ros_bumper.so" name="ros_bumper_6">
+        <bumperTopicName>gripper_link_collision</bumperTopicName>
+        <frameName>gripper_link_collision</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  
+  <gazebo reference="grip_point">
+    <sensor name="grip_point_contact" type="contact">
+      <update_rate> 50 </update_rate>
+      <always_on>true</always_on>
+      <contact>
+        <collision>wrist_3_link_fixed_joint_lump__grip_point_collision_3</collision>
+      </contact>
+      <plugin filename="libgazebo_ros_bumper.so" name="ros_bumper_7">
+        <bumperTopicName>grip_point_collision</bumperTopicName>
+        <frameName>grip_point_collision</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+</robot>
