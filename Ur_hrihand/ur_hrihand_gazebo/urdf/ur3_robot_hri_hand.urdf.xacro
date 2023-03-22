@@ -9,7 +9,6 @@
 
   <!-- ur3 -->
   <xacro:include filename="$(find ur_hrihand_gazebo)/urdf/ur3.urdf.xacro" />
-  <!-- <xacro:include filename="$(find ur_robot_server)/urdf/hri_hand.xacro" /> -->
   <xacro:include filename="$(find ur_hrihand_gazebo)/urdf/d435_camera_g.urdf.xacro" />
   
   <!-- arm -->
@@ -24,7 +23,7 @@
   />
 
   <xacro:g_sensor_d435 parent="gripper_link">
-    <origin xyz="-0.07 0.0 0.00" rpy="0 ${-pi/2} 0"/>
+    <origin xyz="-0.085 0.0 -0.03" rpy="0 ${-pi/2} 0"/>
   </xacro:g_sensor_d435>
     
 

@@ -13,7 +13,7 @@ aluminum peripherial evaluation case.
   <!--<xacro:include filename="$(find realsense2_description)/urdf/_materials.urdf.xacro" />-->
   <xacro:include filename="$(find realsense2_description)/urdf/_usb_plug.urdf.xacro" />
 
-  <xacro:macro name="g_sensor_d435" params="parent *origin name:=g_camera use_nominal_extrinsics:=true">
+  <xacro:macro name="g_sensor_d435" params="parent *origin name:=camera use_nominal_extrinsics:=true"> <!--real_robot: camera/ simulation g_sensor_d435-->
     <xacro:arg name="add_plug" default="false" />
     <xacro:property name="M_PI" value="3.1415926535897931" />
 
@@ -152,8 +152,8 @@ aluminum peripherial evaluation case.
       </xacro:usb_plug>
     </xacro:if>-->
   
-   <gazebo reference="g_camera_link">
-        <sensor type="depth" name="g_camera">
+   <gazebo reference="camera_link">
+        <sensor type="depth" name="camera">
             <always_on>1</always_on>
             <visualize>true</visualize>
             <camera>
@@ -173,11 +173,11 @@ aluminum peripherial evaluation case.
             <plugin name="g_camera_controller" filename="libgazebo_ros_openni_kinect.so">
                 <alwaysOn>true</alwaysOn>
                     <updateRate>20.0</updateRate>
-                    <cameraName>g_d435</cameraName>
-                    <frameName>g_camera_depth_optical_frame</frameName>
-                <imageTopicName>rgb/g_image_raw</imageTopicName>
-                <depthImageTopicName>depth/g_image_raw</depthImageTopicName>
-                <pointCloudTopicName>depth/g_points</pointCloudTopicName>
+                    <cameraName>camera</cameraName>
+                    <frameName>camera_depth_optical_frame</frameName>
+                <imageTopicName>rgb/image_raw</imageTopicName>
+                <depthImageTopicName>depth/image_raw</depthImageTopicName>
+                <pointCloudTopicName>depth/points</pointCloudTopicName>
                 <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>
                 <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
                 <pointCloudCutoff>0.4</pointCloudCutoff>
